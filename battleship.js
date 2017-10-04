@@ -1,3 +1,5 @@
+
+
 $(() => {
   // Select table containing the battleground
   const battleground = $('#battleground');
@@ -19,12 +21,115 @@ $(() => {
   }
 
   $('#generate').click(() => {
-    // Here you have to add your code for building a random battleground.
+    for (let i = 0; i < 10; i++) {
+      for (let j = 0; j < 10; j++) {
+        $('td[data-r="' + i + '"][data-c="' + j + '"]').removeClass('ship').addClass('water');
+      }
+    }
+    //List of the ships
+    const ships = [5];
 
-    // Tip: The next line of code demonstrates how you can select a table cell
-    // using coordinates, remove CSS classes and add CSS classes. 
-    $('td[data-r="1"][data-c="1"]').removeClass('water').addClass('ship');
-    $('td[data-r="2"][data-c="1"]').removeClass('water').addClass('ship');
-    $('td[data-r="3"][data-c="1"]').removeClass('water').addClass('ship');
+    //different types of the ships
+    const carrier = {};
+    const battleship = {};
+    const cruiser = {};
+    const submarine = {};
+    const destroyer = {};
+
+    //length of the ships
+    carrier.shipLength = 5;
+    battleship.shipLength = 4;
+    cruiser.shipLength = 3;
+    submarine.shipLength = 3;
+    destroyer.shipLength = 2;
+
+    //add ships to Array
+    ships[0] = carrier;
+    ships[1] = battleship;
+    ships[2] = cruiser;
+    ships[3] = submarine;
+    ships[4] = destroyer;
+
+    for (let i = 0; i < ships.length; i++) {
+      calculateShip(ships[i]);
+    }
+
   });
 });
+
+function calculateShip(ship) {
+
+  const direction = Math.floor(Math.random() * (1 - 0 + 1) + 0);                                                                    //0: horizontal, 1: vertical
+  //alert(direction);
+
+  if (direction == 0) {
+    var placed = false;
+    var boolSet = false;
+    while (!placed) {
+      var k = 0;                                                                                                                    //counter for length of ship
+
+      const iRandom = Math.floor(Math.random() * (9 - 0 + 1) + 0);
+      const jRandom = Math.floor(Math.random() * (9 - 0 + 1) + 0);
+
+      if ((jRandom + ship.shipLength) < 10) {
+        while (k < ship.shipLength) {
+          boolSet = setable(iRandom, jRandom);
+          if(!boolSet){
+            break;
+          }
+          k++;
+        }
+        if (boolSet) {
+          for (let j = jRandom; j < ship.shipLength + jRandom; j++) {
+            // alert("zeichnen");
+            $('td[data-r="' + iRandom + '"][data-c="' + j + '"]').removeClass('water').addClass('ship');
+          }
+          placed = true;
+        }
+      }
+    }
+  } else if (direction == 1) {
+    var placed = false;
+    var boolSet = false;
+    while (!placed) {
+      var k = 0;                                                                                                                    //counter for length of ship
+
+      const iRandom = Math.floor(Math.random() * (9 - 0 + 1) + 0);
+      const jRandom = Math.floor(Math.random() * (9 - 0 + 1) + 0);
+
+      if ((iRandom + ship.shipLength) < 10) {
+        while (k < ship.shipLength) {
+          boolSet = setable(iRandom, jRandom);
+          if(!boolSet){
+            break;
+          }
+          k++;
+        }
+        if (boolSet) {
+          for (let i = iRandom; i < ship.shipLength + iRandom; i++) {
+            //alert("zeichnen");
+            $('td[data-r="' + i + '"][data-c="' + jRandom + '"]').removeClass('water').addClass('ship');
+          }
+          placed = true;
+        }
+      }
+    }
+  }
+}
+
+function setable(i, j) {
+
+  if(!($('td[data-r="' + i + '"][data-c="' + j + '"]').hasClass('ship'))
+    && !($('td[data-r="' + (i - 1) + '"][data-c="' + j + '"]').hasClass('ship'))
+    && !($('td[data-r="' + (i - 1) + '"][data-c="' + (j - 1) + '"]').hasClass('ship'))
+    && !($('td[data-r="' + i + '"][data-c="' + (j - 1) + '"]').hasClass('ship'))
+    && !($('td[data-r="' + (i + 1) + '"][data-c="' + (j - 1) + '"]').hasClass('ship'))
+    && !($('td[data-r="' + (i + 1) + '"][data-c="' + j + '"]').hasClass('ship'))
+    && !($('td[data-r="' + (i + 1) + '"][data-c="' + (j + 1) + '"]').hasClass('ship'))
+    && !($('td[data-r="' + i + '"][data-c="' + (j + 1) + '"]').hasClass('ship'))
+    && !($('td[data-r="' + (i - 1) + '"][data-c="' + (j + 1) + '"]').hasClass('ship'))){
+    return true;
+  }
+
+  return false;
+}
